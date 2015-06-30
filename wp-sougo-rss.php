@@ -6,12 +6,17 @@ Plugin Name: wp sougo rss
 require_once('SR_RssField.php');
 require_once('SR_RssFieldOne.php');
 require_once('WPSougoRssCore.php');
+require_once('wp_post_helper/class-wp_post_helper.php');
+require_once('SR_Admin.php');
 
 add_action('admin_menu', 'mt_add_pages');
 function mt_add_pages() {
     add_menu_page('WP相互RSS', 'WP相互RSS', 8, __FILE__, 'wp_sougo_rss_main_page');
     add_submenu_page(__FILE__, 'WP相互RSS 追加ページ', 'add', 8, 'wp-sougo-rss-add-page', 'wp_sougo_rss_add_page');
 }
+
+
+
 
 function wp_sougo_rss_main_page() {
     $url = "http://".$_SERVER["HTTP_HOST"].$_SERVER["SCRIPT_NAME"];

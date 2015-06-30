@@ -188,7 +188,7 @@ if (isset($_POST['wp_sougo_rss_submit'])){
     function changeLivedoorFormat(){
         tmpField();
         for(i = 0; i < fields.length; i++){
-            fields[i].common = 'checked';
+            document.getElementsByName('save_field['+ i +'][common]')[0].checked = 'check';
         }
         addField('layout', '上部分（一番上に設置）　※消さないでください ライブドア変更用タグです', '', '', '<div class="blogroll-channel"><ul class="blogroll-list-wrap">', '', '',0);
         addField('layout', '下部分（一番下に設置）　※消さないでください ライブドア変更用タグです', '', '', '</ul></div>', '', '', false);
@@ -198,8 +198,8 @@ if (isset($_POST['wp_sougo_rss_submit'])){
     function changeLivedoorIconFormat(){
         tmpField();
         for(i = 0; i < fields.length; i++){
-            fields[i].common = 'checked';
-            fields[i].iconCommon = 'checked'
+            document.getElementsByName('save_field['+ i +'][common]')[0].checked = 'check';
+            document.getElementsByName('save_field['+ i +'][iconCommon]')[0].checked = 'check';
         }
         addField('layout', '上部分（一番上に設置）　※消さないでください ライブドア変更用タグです', '', '', '<div class="blogroll-channel"><ul class="blogroll-list-wrap">', '', '',0);
         addField('layout', '下部分（一番下に設置）　※消さないでください ライブドア変更用タグです', '', '', '</ul></div>', '', '', false);

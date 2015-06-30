@@ -1,4 +1,5 @@
-表示形式<br />
+<?php global $rssFields; ?>
+表示形式 <a href="#" title="RSSフィードの記事の表示順序です">[?]</a><br />
 <label><input type="radio" name="save_sort" value="1" <?php if($rssFields->sort == 1) echo 'checked' ?>>登録順</label><br />
 <label><input type="radio" name="save_sort" value="2" <?php if($rssFields->sort == 2) echo 'checked' ?>>時間順</label><br />
 <label><input type="radio" name="save_sort" value="3" <?php if($rssFields->sort == 3) echo 'checked' ?>>ランダム</label><br />

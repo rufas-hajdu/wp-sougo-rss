@@ -2,11 +2,10 @@
 /*
 Plugin Name: wp sougo rss
 */
-//ini_set('display_errors', true);
+ini_set('display_errors', true);
 require_once('SR_RssField.php');
 require_once('SR_RssFieldOne.php');
 require_once('WPSougoRssCore.php');
-require_once('wp_post_helper/class-wp_post_helper.php');
 require_once('SR_Admin.php');
 
 
@@ -17,7 +16,7 @@ function wp_sougo_rss_shortcode($atts) {
     ), $atts));
     if (is_numeric($id)){
         $rssFields = new WPSougoRssCore($id);
-        return $rssFields->inset();;
+        return $rssFields->inset();
     }
     return '';
 }

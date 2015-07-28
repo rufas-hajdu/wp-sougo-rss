@@ -43,6 +43,7 @@ class WPSougoRssCore {
                 }
             }
         }
+        wp_reset_postdata();
         return $saved_setting;
     }
 
@@ -50,16 +51,13 @@ class WPSougoRssCore {
         $this->settingData = $this->getSavedRssFields($id);
     }
 
-    private function get_external_rss($url, $start = 0, $count = 1){
-        $start = is_numeric($start) ? $start : 0;
-        $count = is_numeric($count) ? $count : 1;
-
+    private function get_external_rss($url){
         $rss = fetch_feed($url);
         if (!is_wp_error($rss)){
             $rss->set_cache_duration(600);
             $rss->init();
-            $maxItems = $rss->get_item_quantity($count);
-            $items = $rss->get_items($start, $maxItems);
+            $maxItems = $rss->get_item_quantity(0);
+            $items = $rss->get_items(0, $maxItems);
             return array(
                 'items' => $items,
                 'siteName' => $rss->get_title(),
@@ -70,19 +68,47 @@ class WPSougoRssCore {
         }
     }
 
-
     public function inset(){
         include_once(ABSPATH . WPINC . '/rss.php');
+
+        $ng_words = $this->settingData->ng_word;
+        $ng_words = explode(PHP_EOL,$ng_words);
+        $ngs = array();
+        $replaces = array();
+        foreach ($ng_words as $ng_word){
+            if (preg_match('/(.*),(.*)/',$ng_word,$match)){
+                $replaces[] = array(trim($match[1]),trim($match[2]));
+            } else{
+                if (trim($ng_word) != "") {
+                    $ngs[] = trim($ng_word);
+                }
+            }
+        }
+
         $i = 0;
         $instanceItems = array();
         $items = array();
         foreach ($this->settingData->rssFieldOnes[0] as $fieldData) {
-            $rss_parameter = $this->get_external_rss($fieldData->url, $fieldData->start, $fieldData->count);
+            /* @var $fieldData SR_RssFieldOne */
+            $rss_parameter = $this->get_external_rss($fieldData->url, $fieldData->start);
             if ($rss_parameter !== null) {
                 $rssItems = $rss_parameter['items'];
                 $siteName = $rss_parameter['siteName'];
                 $siteLink = $rss_parameter['siteLink'];
+
+                $j = 0;
                 foreach ($rssItems as $rssItem) {
+                    foreach ($ngs as $ng) {
+                        if (mb_strpos($rssItem->get_title(), $ng) !== false) {
+                            continue 2;
+                        }
+                    }
+                    if ($j < $fieldData->start){
+                        $j++;
+                        continue;
+                    } else if ($fieldData->start + $fieldData->count - 1 < $j){
+                        break;
+                    }
                     preg_match('/<img([ ]+)([^>]*)src\=["|\']([^"|^\']+)["|\']([^>]*)>/', $rssItem->get_content(), $matches);
                     if (isset($matches[0])) {
                         if (preg_match("/counter2/", $matches[3])) {
@@ -98,7 +124,7 @@ class WPSougoRssCore {
                     } else {
                         $code = $fieldData->code;
                     }
-                    if($fieldData->common == true) {
+                    if($fieldData->iconCommon == true) {
                         $icon = $this->settingData->icon;
                     } else {
                         $icon = $fieldData->icon;
@@ -113,14 +139,17 @@ class WPSougoRssCore {
                         'icon' => $icon,
                         'site' => $siteName,
                         'sitelink' => $siteLink,
+                        'ng_check' => true,
                     );
                     $i++;
+                    $j++;
                 }
             } else if($fieldData->url == 'instance') {
                 $instanceItems[] = array(
                     'code' => $fieldData->code,
                     'number' => $i,
                     'layout' => false,
+                    'ng_check' => false,
                 );
                 $i++;
             } else if($fieldData->url == 'layout') {
@@ -128,6 +157,7 @@ class WPSougoRssCore {
                     'code' => $fieldData->code,
                     'number' => $i,
                     'layout' => true,
+                    'ng_check' => false,
                 );
                 $i++;
             }
@@ -155,7 +185,12 @@ class WPSougoRssCore {
             }
         }
         $blocks = array();
-        foreach ($items as $item){
+        foreach ($items as $item) {
+            if ($item['ng_check'] === true) {
+                foreach ($replaces as $replace) {
+                    $item['title'] = str_replace($replace[0], $replace[1], $item['title']);
+                }
+            }
             $block = $item['code'];
             $block = str_replace('<$link>',$item['link'],$block);
             $block = str_replace('<$title>',$item['title'],$block);

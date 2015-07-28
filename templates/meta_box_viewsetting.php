@@ -19,6 +19,12 @@
 <$datetime>　記事の更新日時<br />
 <$site>　記事のサイト名<br />
 <$sitelink> 記事のサイトのURL<br />
+NGワード表記<br />
+<textarea style="width:80%; height:60px;" name="save_ng_word"><?php echo $rssFields->ng_word; ?></textarea><br />
+書き方<br />
+1行に1つの設定を入れます<br />
+文字列を入れるとそのワードが含まれる場合表示しません<br />
+文字列,文字列を入れると,の前の文字列を後ろの文字列に変換します<br />
 <div style="margin:20px 0;">
     ライブドア変更用<br />
     各フィールドのurl,start,countを設定後1回だけ下のボタンを押してください<br />

@@ -38,7 +38,11 @@ class SR_Admin
     function sougorss_edit_form_after_title($posts){
         global $post;
         if (get_post_type($post) == 'sougorss') {
-            unset ($posts['view']);
+            foreach($posts as $key => $value){
+                if (!($key == 'edit' || $key == 'trash')) {
+                    unset ($posts[$key]);
+                }
+            }
         }
         return $posts;
     }
@@ -94,7 +98,7 @@ class SR_Admin
     private function storeRssFields($post_id){
         $rssField = new SR_RssField();
         foreach ((array)$_POST['save_field'] as $postdata) { // 0, 1, 2, 3, 4, ...
-            $rssFieldOne = new SR_RssFliedOne();
+            $rssFieldOne = new SR_RssFieldOne();
             foreach ($rssFieldOne as $key => $value) { // url, icon, start, ...
                 $rssFieldOne->$key = $postdata[$key];
             }
@@ -185,6 +189,7 @@ class SR_Admin
                 }
             }
         }
+        wp_reset_postdata();
         return $saved_setting;
     }
 
@@ -215,7 +220,6 @@ class SR_Admin
             include( SOUGORSS_DIR . '/templates/admin_head.php' );
         }
     }
-
 
     /**
      * admin_footer

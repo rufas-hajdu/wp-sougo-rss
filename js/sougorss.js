@@ -1,3 +1,26 @@
+function BlockEnter(evt){
+    evt = (evt) ? evt : event;
+    var charCode=(evt.charCode) ? evt.charCode :
+        ((evt.which) ? evt.which : evt.keyCode);
+    if ( Number(charCode) == 13 || Number(charCode) == 3) {
+        return false;
+    } else {
+        return true;
+    }
+}
+function BlockEnterGetElement(){
+    var elements = document.forms["post"].elements;
+    for (var j=0; j < elements.length; j++) {
+        var e = elements[j];
+        if (e.type == "text"){
+            e.onkeypress=BlockEnter;
+        }
+    }
+}
+
+window.onload = function(){
+    BlockEnterGetElement();
+}
 
 var fields = new Array();
 var fieldArray = function (url, icon, start, count, code, common, iconCommon){
@@ -46,6 +69,7 @@ function refreshFieldDOM(){
     for(i = 0;i < fields.length; i++){
         addFieldDOM(i);
     }
+    BlockEnterGetElement();
 }
 function addField(url, icon, start, count, code, common, iconCommon, addNumber) {
     addNumber = isNaN(addNumber)? false : addNumber;

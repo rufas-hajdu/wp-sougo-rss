@@ -6,7 +6,7 @@
  * Time: 16:46
  */
 
-class SR_RssFliedOne {
+class SR_RssFieldOne {
 
     public $url;
     public $name;

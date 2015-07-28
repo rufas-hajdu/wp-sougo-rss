@@ -16,6 +16,7 @@ class SR_RssField {
     public $date_format;
     public $code;
     public $icon;
+    public $ng_word;
 
     /** @var  SR_RssFieldOne[] */
     public $rssFieldOnes;

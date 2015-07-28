@@ -3,6 +3,8 @@ define('SOUGORSS_DIR', __DIR__);
 define('SOUGORSS_CPT', 'sougorss');
 define( 'SOUGORSS_URL', plugins_url( 'wp-sougo-rss' ) );
 
+include_once('WPSougoRssCore.php');
+
 /**
  * Created by IntelliJ IDEA.
  * User: yousan
@@ -84,12 +86,20 @@ class SR_Admin
     }
 
     /**
-     * 記事の保存
+     * 記事の保存 (SougoRssのPostを保存する)
      */
     public function save_post($post_id) {
+        $this->removeCache($post_id);
         $this->storeRssFields($post_id);
     }
 
+    /**
+     * SougoRSSでは高速化のためにOsrData (オズールデータ、外部サイトRSSデータ)をキャッシュしている
+     * NGワードや記事の並び順などもキャッシュされるため、オプションの更新時にはそのキャッシュをクリアしてあげると都合が良い
+     */
+    private function removeCache($post_id) {
+        update_post_meta($post_id, WPSougoRssCore::POST_META_KEY, '');
+    }
 
 
     /**

@@ -1,10 +1,10 @@
 <?php
-global $rssFields;
+global $rss_fields;
 ?>
 <div>
     <?php
     if ($is_edit == true){
-        echo '<input type="hidden" name="save_ID" value="'.$rssFields->ID.'" />';
+        echo '<input type="hidden" name="save_ID" value="' . $rss_fields->ID . '" />';
     }
     ?>
     <div id="rss-field"></div>
@@ -13,7 +13,7 @@ global $rssFields;
 
 <?php
 echo '<script type="text/javascript">';
-foreach($rssFields->rssFieldOnes[0] as $rssField){
+foreach($rss_fields->rssFieldOnes[0] as $rssField){
     echo "addField('".$rssField->url."','".$rssField->icon."','".$rssField->start."','".$rssField->count."','".$rssField->code."','".$rssField->common."','".$rssField->iconCommon."');";
 }
 echo '</script>';

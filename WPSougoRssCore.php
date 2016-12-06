@@ -136,7 +136,7 @@ class WPSougoRssCore {
             }
 
             $i = 0;
-            foreach ($this->settingData->rssFieldOnes[0] as $fieldData) {
+            foreach ($this->settingData->rss_field_ones[0] as $fieldData) {
                 /* @var $fieldData SR_RssFieldOne */
                 $rss_parameter = $this->get_external_rss($fieldData->url, $fieldData->start);
                 if ($rss_parameter !== null) {

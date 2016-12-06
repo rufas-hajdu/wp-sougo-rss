@@ -19,5 +19,5 @@ class SR_RssField {
     public $ng_word;
 
     /** @var  SR_RssFieldOne[] */
-    public $rssFieldOnes;
+    public $rss_field_ones;
 }

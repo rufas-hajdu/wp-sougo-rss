@@ -51,6 +51,40 @@ function wp_sougo_rss_change_column($column_name, $post_id) {
         }
     }
 }
+
+function wp_sougo_rss_update_rss(){
+    $args = array(
+        'numberposts' => -1, //表示する記事の数
+        'post_type' => 'sougorss' //投稿タイプ名
+        // 条件を追加する場合はここに追記
+    );
+    $customPosts = get_posts($args);
+    foreach($customPosts as $customPost){
+        $rssFields = new WPSougoRssCore($customPost->ID);
+        $rssFields->update_osrdata();
+    }
+    wp_reset_postdata();
+}
+
+function wp_sougo_rss_activation() {
+    if ( ! wp_next_scheduled( 'wp_sougo_rss_event' ) ) {
+        wp_schedule_event(time(), '60sec', 'wp_sougo_rss_event');
+    }
+}
+
+
+function wp_sougo_rss_interval(){
+    // 60秒毎を追加
+    $schedules['60sec'] = array(
+        'interval' => 60,
+        'display' => 'every 60 seconds'
+    );
+    return $schedules;
+}
+
 add_filter( 'manage_posts_columns', 'wp_sougo_rss_change_posts_columns',1000);
 add_action( 'manage_pages_custom_column', 'wp_sougo_rss_change_column', 1000, 2 );
+add_action('wp', 'wp_sougo_rss_activation');
+add_filter('cron_schedules', 'wp_sougo_rss_interval');
+add_action( 'wp_sougo_rss_event', 'wp_sougo_rss_update_rss' );
 ?>

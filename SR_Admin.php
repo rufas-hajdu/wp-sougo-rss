@@ -132,7 +132,8 @@ class SR_Admin
      * 実際にデータベースに保管するところ
      */
     private function storeRssField(SR_RssField $rssField) {
-        global $current_user; /** @var WP_User */
+
+//        global $current_user; /** @var WP_User */
 //        $data = array(
 //            'ID'           => $rssField->ID,
 //            'post_name'    => $rssField->title,			// スラッグ
@@ -145,15 +146,16 @@ class SR_Admin
 //            //'post_category'=> array(1, 2) ,		// カテゴリーID を配列で
 //            //'post_tags'    => array('タグ1', 'タグ2') ,	// 投稿のタグを配列で
 //        );
-        if (is_numeric($rssField->ID)) { // update
+//        if (is_numeric($rssField->ID)) { // update
             //$posts = new wp_post_helper($rssField->ID); // get post data;
             //$posts->set($data);
             //$ID = $posts->update();
-        } else { // insert
+//        } else { // insert
             //$posts = new wp_post_helper($data);
             //$ID = $posts->insert();
-        }
+//        }
         //wp_update_post($data);
+
         foreach ($rssField as $key => $value) { // upate custom fields
             switch ($key) {
                 case 'ID':

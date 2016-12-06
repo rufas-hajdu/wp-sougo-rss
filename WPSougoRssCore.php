@@ -57,6 +57,7 @@ class WPSougoRssCore {
         $this->post_id = $id;
     }
 
+
     private function get_external_rss($url){
         $rss = fetch_feed($url);
         if (!is_wp_error($rss)){
@@ -110,11 +111,15 @@ class WPSougoRssCore {
      *
      * @return SR_OsrData
      */
-    private function get_osrdata() {
+    private function get_osrdata()
+    {
         $osrData = get_post_meta($this->post_id, self::POST_META_KEY, true);
-        if ($this->is_expired_osrdata($osrData)) {
-            return $osrData;
-        } else {
+        return $osrData;
+    }
+
+    public function update_osrdata(){
+        $osrData = get_post_meta($this->post_id, self::POST_META_KEY, true);
+        if (!$this->is_expired_osrdata($osrData)) {
             $osrData = new SR_OsrData();
 
             $ng_words = $this->settingData->ng_word;
@@ -208,7 +213,6 @@ class WPSougoRssCore {
             }
         }
         $this->saveOsrData($osrData);
-        return $osrData;
     }
 
     public function inset(){
@@ -218,29 +222,33 @@ class WPSougoRssCore {
 
 
         if ($this->settingData->sort == 2) { // オプションの表示形式が時間順
-            usort($osrData->items, array($this, "sort_time"));
-            foreach($osrData->instanceItems as $value){
+            if (isset($osrData->items)) {
+                usort($osrData->items, array($this, "sort_time"));
+            }
+            foreach((array)$osrData->instanceItems as $value){
                 array_splice($osrData->items,$value['number'],0,array(array('code' => $value['code'])));
             }
         } else if($this->settingData->sort == 3){ // オプションの表示形式がランダム
-            foreach($osrData->instanceItems as $value){
+            foreach((array)$osrData->instanceItems as $value){
                 if ($value['layout'] == false) {
                     $osrData->items[] = array('code' => $value['code']);
                 }
             }
-            shuffle($osrData->items);
-            foreach($osrData->instanceItems as $value){
+            if (isset($osrData->items)) {
+                shuffle($osrData->items);
+            }
+            foreach((array)$osrData->instanceItems as $value){
                 if ($value['layout'] == true) {
                     array_splice($osrData->items, $value['number'], 0, array(array('code' => $value['code'])));
                 }
             }
         } else{ // 表示形式が登録順だった場合にはレイアウトなど順序を保持させるため
-            foreach($osrData->instanceItems as $value){
+            foreach((array)$osrData->instanceItems as $value){
                 array_splice($osrData->items,$value['number'],0,array(array('code' => $value['code'])));
             }
         }
         $blocks = array();
-        foreach ($osrData->items as $item) {
+        foreach ((array)$osrData->items as $item) {
             if ($item['ng_check'] === true) {
                 foreach ((array)$osrData->replaces as $replace) {
                     $item['title'] = str_replace($replace[0], $replace[1], $item['title']);
